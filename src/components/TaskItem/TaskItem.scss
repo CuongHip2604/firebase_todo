@@ -1,0 +1,8 @@
+.task_item {
+  position: relative;
+
+  .ant-list-item {
+    display: flex;
+    justify-content: space-between;
+  }
+}
