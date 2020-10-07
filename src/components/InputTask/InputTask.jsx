@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
 import { DownOutlined } from '@ant-design/icons';
-import { database } from '../../Api/firebase';
-import { Button, Col, Input, Radio, Row } from 'antd';
-import './InputTask.scss';
-import { useEffect } from 'react';
+import { Button, Input, Radio } from 'antd';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { database } from '../../Api/firebase';
 import { getTask } from '../../store/slices/todoSlice';
+import './InputTask.scss';
 
 
 function InputTask(props) {

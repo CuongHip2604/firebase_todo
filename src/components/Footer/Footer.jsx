@@ -1,9 +1,8 @@
-import React from 'react';
 import { Button, List, Radio } from 'antd';
-import './Footer.scss';
 import propTypes from 'prop-types';
-import { useSelector } from 'react-redux';
-import { database } from '../../Api/firebase';
+import React from 'react';
+import { Link } from 'react-router-dom';
+import './Footer.scss';
 
 Footer.propTypes = {
   tasks: propTypes.array,
@@ -52,9 +51,11 @@ function Footer(props) {
         </List.Item>
       </List>
       <div className="btn-logout">
-        <Button type="link" danger>
-          Logout
-        </Button>
+        <Link to="/login">
+          <Button type="link" danger>
+            Logout
+          </Button>
+        </Link>
       </div>
     </div>
   );
