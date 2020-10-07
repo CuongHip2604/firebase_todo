@@ -5,4 +5,9 @@
     display: flex;
     justify-content: space-between;
   }
+
+  .task_name_complete {
+    text-decoration: line-through;
+    opacity: 0.3;
+  }
 }

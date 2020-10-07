@@ -2,29 +2,36 @@ import { Button, Checkbox, List, Modal } from 'antd';
 import React from 'react';
 import { EditTwoTone, DeleteTwoTone, ExclamationCircleOutlined } from '@ant-design/icons';
 import './TaskItem.scss'
-import PropTypes from 'prop-types';
 import { database } from '../../Api/firebase';
 import { getTask } from '../../store/slices/todoSlice';
 import { useDispatch } from 'react-redux';
 
+import propTypes from 'prop-types';
+
 TaskItem.propTypes = {
-  tasks: PropTypes.array,
+  tasks: propTypes.array,
 }
 
 TaskItem.defaultProps = {
-  tasks: []
+  tasks: [],
 }
+
 
 function TaskItem(props) {
 
-  const {tasks} = props;
+  const { tasks } = props
   const dispatch = useDispatch();
+
 
   const deleteTask = (id) => {
     database.ref('tasks').child(id).remove()
   }
   const editTask = (id) => {
-    const action = getTask(id);
+    const data = {
+      id: id,
+      isOpen: true
+    }
+    const action = getTask(data);
     dispatch(action)
   }
   const onChange = (item) => {
@@ -33,7 +40,6 @@ function TaskItem(props) {
       isComplete: !item.isComplete,
       created: new Date().toISOString()
     }
-    console.log(data);
     database.ref('tasks').child(item.id).update(data)
   }
   const confirm = (id) => {
@@ -48,50 +54,45 @@ function TaskItem(props) {
 
   return (
     <div className="task_item">
-      {
-        tasks.length > 0 && (
-          <List
-            dataSource={tasks}
-            renderItem={item => (
-              <List.Item>
-                <Checkbox defaultChecked={item.isComplete} onChange={() => onChange(item)} />
-                <h3>{item.taskName}</h3>
+      <List
+        dataSource={tasks}
+        renderItem={item => (
+          <List.Item>
+            <Checkbox checked={item.isComplete} onChange={() => onChange(item)} />
+            {
+              !item.isComplete && (<h3>{item.taskName}</h3>)
+            }
+            {
+              item.isComplete && (<h3 className="task_name_complete">{item.taskName}</h3>)
+            }
+            {
+              !item.isComplete && (
                 <div className="actions">
                   <Button type="text" danger>
-                    <EditTwoTone onClick={() => editTask(item.id)}/>
+                    <EditTwoTone onClick={() => editTask(item.id)} />
                   </Button>
                   <Button type="text" danger>
                     <DeleteTwoTone twoToneColor="#f81d22" onClick={() => confirm(item.id)} />
                   </Button>
                 </div>
-              </List.Item>
-            )}
-          />
-        )
-      }
-      {
-        tasks.length === 0 && (
-          <List
-            loading
-            dataSource={[]}
-            renderItem={item => (
-              <List.Item>
-                <Checkbox />
-                <h3>{item.taskName}</h3>
+              )
+            }
+            {
+              item.isComplete && (
                 <div className="actions">
-                  <Button type="text" danger>
-                    <EditTwoTone />
+                  <Button type="text" danger disabled>
+                    <EditTwoTone twoToneColor="#bfbfbf" />
                   </Button>
-                  <Button type="text" danger>
-                    <DeleteTwoTone twoToneColor="#f81d22"/>
+                  <Button type="text" danger disabled>
+                    <DeleteTwoTone twoToneColor="#bfbfbf" />
                   </Button>
                 </div>
-              </List.Item>
-            )}
-          />
-        )
-      }
-      </div>
+              )
+            }
+          </List.Item>
+        )}
+      />
+    </div>
   );
 }
 

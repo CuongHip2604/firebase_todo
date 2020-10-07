@@ -15,10 +15,10 @@ const todo = createSlice({
       action.payload.map((el) => state.tasks.push(el));
     },
     getTask: (state, action) => {
-      const index = state.tasks.findIndex((el) => el.id === action.payload);
+      const index = state.tasks.findIndex((el) => el.id === action.payload.id);
       if (index >= 0) {
         state.taskSelected = state.tasks[index];
-        state.isOpen = true;
+        state.isOpen = action.payload.isOpen;
       }
     },
   },

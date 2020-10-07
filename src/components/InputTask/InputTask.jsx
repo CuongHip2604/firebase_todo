@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { DownOutlined } from '@ant-design/icons';
 import { database } from '../../Api/firebase';
-import { Button, Input } from 'antd';
+import { Button, Col, Input, Radio, Row } from 'antd';
 import './InputTask.scss';
 import { useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { getTask } from '../../store/slices/todoSlice';
 
 
 function InputTask(props) {
@@ -12,6 +13,7 @@ function InputTask(props) {
   const [value, setValue] = useState('');
   const taskSelected = useSelector(state => state.todos.taskSelected);
   const isOpen = useSelector(state => state.todos.isOpen);
+  const dispatch = useDispatch();
 
   const onChange = (e) => {
     setValue(e.target.value)
@@ -38,7 +40,22 @@ function InputTask(props) {
       isComplete: false,
       created: new Date().toISOString()
     }
+    const action = {
+      id: taskSelected.id,
+      isOpen: false
+    }
+    dispatch(getTask(action))
     database.ref('tasks').child(taskSelected.id).update(data)
+    setValue('')
+
+  }
+
+  const cancle = () => {
+    const action = {
+      id: taskSelected.id,
+      isOpen: false
+    }
+    dispatch(getTask(action))
     setValue('')
   }
 
@@ -50,21 +67,26 @@ function InputTask(props) {
         placeholder="What needs to be done?"
         value={value}
         onChange={onChange}
-        prefix={<DownOutlined style={{color: '#bfbfbf'}}/>}
+        prefix={<DownOutlined style={{ color: '#bfbfbf' }} />}
       />
       {
         !isOpen && (
           <Button type="primary" size="large" onClick={addTask}>
-              ADD
+            ADD
           </Button>
 
         )
       }
       {
         isOpen && (
-          <Button type="primary" size="large" onClick={updateTask}>
+          <Radio.Group size='small'>
+            <Button type="primary" className="update" size="large" onClick={updateTask}>
               UPDATE
-          </Button>
+            </Button>
+            <Button type="text" size="large" danger onClick={cancle}>
+              CANCLE
+            </Button>
+          </Radio.Group>
         )
       }
     </div>
